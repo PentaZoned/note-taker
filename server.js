@@ -3,6 +3,7 @@ var express = require('express');
 const path = require('path');
 const fs = require('fs');
 const util = require('util');
+const shortUID = require('short-unique-id');
 
 const PORT = process.env.PORT || 3000;
 
@@ -16,6 +17,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Allows us to serve static files such as index.html and notes.html
 app.use(express.static('public'));
+
+const uid = new shortUID({ length: 5 });
 
 // Allows the JSON file to be readable
 const readFromFile = util.promisify(fs.readFile);
@@ -40,6 +43,7 @@ const readAndAppend = (content, file) => {
 };
 
 
+
 // GET route for homepage
 // Sets the current webpage to index.html upon visit
 app.get('/', (req, res) =>
@@ -52,11 +56,29 @@ app.get('/notes', (req, res) =>
     res.sendFile(path.join(__dirname, '/public/notes.html'))
 );
 
+// GET route to read the db.json file and return the saved notes as JSON
 app.get('/api/notes', (req, res) => {
-    res.json('db/db.json');
+    readFromFile('./db/db.json').then((data) => {
+        console.log(JSON.parse(data));
+        res.JSON(JSON.parse(data));
+    });
 });
 
+app.post('/api/notes', (req, res) => {
+    const {title, text} = req.body;
 
+    if(req.body) {
+        const newNote = {
+            title,
+            text,
+            id: uid(),
+        }
+        readAndAppend(newNote, './db/db.json');
+        res.json("Saved note.");
+    } else {
+        res.error('Not has not been saved. Please try again.');
+    }
+});
 
 // listener for the port
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`));

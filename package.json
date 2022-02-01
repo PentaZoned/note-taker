@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.16.4",
     "fs": "^0.0.1-security",
+    "short-unique-id": "^4.4.4",
     "util": "^0.12.4"
   }
 }
