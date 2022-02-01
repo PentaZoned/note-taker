@@ -34,18 +34,25 @@ app.get('/api/notes', (req, res) => {
     });
 });
 
+// POST route works with the parsed JSON and appends the new note to the back of the
+// db.json file
 app.post('/api/notes', (req, res) => {
+    // how each element in the JSON file is interpretted
     const {title, text} = req.body;
 
+    // if the element exists
     if(req.body) {
+        // create a new note with title, text, and id 
         const newNote = {
             title,
             text,
             id: uid(),
         }
+        // append that new note to the back of the json file
         readAndAppend(newNote, './db/db.json');
         res.json("Saved note.");
     } else {
+        // If the new note cannot be saved, log the error
         res.error('Note has not been saved. Please try again.');
     }
 });
