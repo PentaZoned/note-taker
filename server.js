@@ -51,9 +51,11 @@ app.post('/api/notes', (req, res) => {
         // append that new note to the back of the json file
         readAndAppend(newNote, './db/db.json');
         res.json("Saved note.");
+        console.log("saved");
     } else {
         // If the new note cannot be saved, log the error
         res.error('Note has not been saved. Please try again.');
+        console.log('Note has not been saved. Please try again.');
     }
 });
 
