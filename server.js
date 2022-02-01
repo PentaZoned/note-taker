@@ -1,9 +1,9 @@
 // imported and required packages
-var express = require('express');
+const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const util = require('util');
 const shortUID = require('short-unique-id');
+const { readAndAppend, writeToFile, readFromFile } = require('./helper/fsUtils.js');
 
 const PORT = process.env.PORT || 3000;
 
@@ -20,47 +20,17 @@ app.use(express.static('public'));
 
 const uid = new shortUID({ length: 5 });
 
-// Allows the JSON file to be readable
-const readFromFile = util.promisify(fs.readFile);
-
-// function that writes to a specific location with the contents
-const writeToFile = (destination, content) =>
-    fs.writeFile(destination, JSON.stringify(content, null, 4), (err) =>
-    err ? console.log(err) : console.log(`Data writtne to ${destination}`)
-    );
-
-// Reads a file and appends data
-const readAndAppend = (content, file) => {
-    fs.readFile(file, 'utf8', (err, data) => {
-        if(err) {
-            console.log(err);
-        } else {
-            const parsedData = JSON.parse(data);
-            parsedData.push(content);
-            writeToFile(file, parsedData);
-        }
-    });
-};
-
-
-
-// GET route for homepage
-// Sets the current webpage to index.html upon visit
-app.get('/', (req, res) =>
-    res.sendFile(path.join(__dirname, '/public/index.html'))
-);
-
 // GET route for the notes page
 // Redirects from the home page to notes.html
 app.get('/notes', (req, res) =>
-    res.sendFile(path.join(__dirname, '/public/notes.html'))
+    res.sendFile(path.join(__dirname, 'public/notes.html'))
 );
 
 // GET route to read the db.json file and return the saved notes as JSON
 app.get('/api/notes', (req, res) => {
     readFromFile('./db/db.json').then((data) => {
         console.log(JSON.parse(data));
-        res.JSON(JSON.parse(data));
+        res.json(JSON.parse(data));
     });
 });
 
@@ -76,9 +46,15 @@ app.post('/api/notes', (req, res) => {
         readAndAppend(newNote, './db/db.json');
         res.json("Saved note.");
     } else {
-        res.error('Not has not been saved. Please try again.');
+        res.error('Note has not been saved. Please try again.');
     }
 });
+
+// GET route for homepage
+// Sets the current webpage to index.html upon visit
+app.get('*', (req, res) =>
+    res.sendFile(path.join(__dirname, '/public/index.html'))
+);
 
 // listener for the port
 app.listen(PORT, () => console.log(`App listening on port ${PORT}`));

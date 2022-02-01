@@ -181,7 +181,3 @@ if (window.location.pathname === '/notes') {
 }
 
 getAndRenderNotes();
-
-document.getElementById("toNotes").addEventListener("click", function() {
-  window.location.href="notes.html";
-})
