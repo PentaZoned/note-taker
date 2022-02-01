@@ -28,6 +28,21 @@ Once cloned over and Node is installed, the user can redirect into the directory
 
 * [See Live Site](https://shielded-shelf-75023.herokuapp.com/)
 
+## Demonstration GIf
+
+* ![Demonstration Gif](images/demonstration.gif)
+
+The user navigates to the notes webpage and enters notes of tasks or any events and saves them.
+
+## Screenshots
+
+* ![Screenshot 1](images/screenshot1.jpg)
+
+Home page with the button to the notes webpage
+
+* ![Screenshot 2](images/screenshot2.jpg)
+
+A list of tasks saved along with a pending task to be saved
 
 ## Authors
 
